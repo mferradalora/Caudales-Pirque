@@ -1,0 +1,40 @@
+name: Monitoreo Pirque Acumulativo
+
+on:
+  schedule:
+    # Se ejecuta a las 00:00 UTC los días 1, 11 y 21 de cada mes
+    - cron: '0 0 1,11,21 * *' 
+  workflow_dispatch: # Permite ejecutarlo manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # Esto soluciona automáticamente el error 403 de permisos
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Se añade la instalación de pandas
+      - name: Instalar librerías
+        run: pip install requests pandas
+
+      # ASEGÚRATE de que este nombre sea igual al de tu archivo Python
+      - name: Ejecutar script
+        run: python "Caudales Pirque Github.py" 
+
+      - name: Guardar datos en el CSV acumulativo
+        run: |
+          git config --global user.name "Bot Pirque"
+          git config --global user.email "bot@ejemplo.com"
+          git add caudales_pirque.csv
+          git commit -m "Se añaden nuevos datos de caudal Pirque" || exit 0
+          git push
