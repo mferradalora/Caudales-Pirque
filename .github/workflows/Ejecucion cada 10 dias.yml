@@ -36,5 +36,5 @@ jobs:
           git config --global user.name "Bot Pirque"
           git config --global user.email "bot@ejemplo.com"
           git add caudales_pirque.csv
-          git commit -m "Se añaden nuevos datos de caudal Pirque" || exit 0
+          git commit -m "Actualizacion de caudales canal Pirque" || exit 0
           git push
