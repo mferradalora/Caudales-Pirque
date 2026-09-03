@@ -1,12 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import requests
 import pandas as pd
-import os # <-- Necesario para verificar si el archivo ya existe
+import os
 
 url = "https://amaruserver.captahydro.com/graphql"
 
@@ -117,36 +111,43 @@ if response.status_code == 200:
                             'Caudal': punto.get('y'),
                             'Unidad': unidad
                         })
-                except Exception as e:
+                except Exception:
                     pass
 
     if registros_totales:
-        df = pd.DataFrame(registros_totales)
+        df_nuevo = pd.DataFrame(registros_totales)
         
         try:
-            df['Fecha'] = pd.to_datetime(df['Timestamp'], unit='ms')
-            df = df[['Estacion', 'Fecha', 'Caudal', 'Unidad', 'Timestamp']]
+            df_nuevo['Fecha'] = pd.to_datetime(df_nuevo['Timestamp'], unit='ms')
+            df_nuevo = df_nuevo[['Estacion', 'Fecha', 'Caudal', 'Unidad', 'Timestamp']]
         except Exception:
             print("No se pudo convertir el timestamp automáticamente.")
             
-        print("\n¡Datos extraídos con éxito! Muestra de las primeras filas:")
-        print(df.head())
-        
-        # --- NUEVA LÓGICA PARA ACUMULAR EN CSV ---
         nombre_archivo = 'caudales_pirque.csv'
         
-        # Verificamos si el archivo ya existe
-        archivo_existe = os.path.isfile(nombre_archivo)
+        # --- LÓGICA ANTI-DUPLICADOS ---
+        if os.path.exists(nombre_archivo):
+            df_existente = pd.read_csv(nombre_archivo)
+            if 'Fecha' in df_existente.columns:
+                df_existente['Fecha'] = pd.to_datetime(df_existente['Fecha'])
+            
+            # Combinar datos existentes con nuevos
+            df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
+            # Eliminar duplicados basados en Estacion y Timestamp
+            df_final = df_final.drop_duplicates(subset=['Estacion', 'Timestamp'], keep='last')
+        else:
+            df_final = df_nuevo
+
+        # Ordenar por estación y fecha
+        df_final = df_final.sort_values(by=['Estacion', 'Fecha']).reset_index(drop=True)
         
-        # mode='a' significa "Añadir" (Append) en lugar de sobreescribir
-        # header=not archivo_existe asegura que las cabeceras solo se escriban la primera vez
-        df.to_csv(nombre_archivo, mode='a', index=False, header=not archivo_existe, encoding='utf-8')
+        # Guardar archivo completo limpio
+        df_final.to_csv(nombre_archivo, index=False, encoding='utf-8')
         
-        print(f"\n✅ Datos agregados exitosamente a: {nombre_archivo}")
-        
+        print(f"\n✅ Datos procesados y guardados en: {nombre_archivo}")
+        print(f"Total de registros acumulados: {len(df_final)}")
     else:
         print("La petición fue exitosa, pero no se encontraron datos de caudal.")
 
 else:
     print(f"Error {response.status_code} al consultar la API.")
-
