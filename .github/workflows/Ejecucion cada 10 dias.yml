@@ -1,10 +1,11 @@
-name: Monitoreo Pirque Acumulativo
+name: Monitoreo Caudales Pirque
 
 on:
   schedule:
-    # Se ejecuta a las 00:00 UTC los días 1, 11 y 21 de cada mes
-    - cron: '0 0 1,11,21 * *' 
-  workflow_dispatch: # Permite ejecutarlo manualmente
+    # Se ejecuta todos los días a las 12:00 PM hora de Chile continental estándar
+    # Nota: Si estás en horario de verano (UTC-3), cambiar a '0 15 * * *'
+    - cron: '0 16 * * *' 
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub
 
 jobs:
   build:
@@ -16,25 +17,23 @@ jobs:
 
     steps:
       - name: Clonar repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Se añade la instalación de pandas
       - name: Instalar librerías
         run: pip install requests pandas
 
       # ASEGÚRATE de que este nombre sea igual al de tu archivo Python
       - name: Ejecutar script
-        run: python "Caudales Pirque Github.py" 
+        run: python "Caudales Pirque Github.py"
 
-      - name: Guardar datos en el CSV acumulativo
+      - name: Guardar datos en el CSV
         run: |
-          git config --global user.name "Bot Pirque"
-          git config --global user.email "bot@ejemplo.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add caudales_pirque.csv
-          git commit -m "Actualizacion de caudales canal Pirque" || exit 0
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Actualizacion automatica de caudales canal Pirque" && git push)
