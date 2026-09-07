@@ -29,7 +29,7 @@ jobs:
 
       # ASEGÚRATE de que este nombre sea igual al de tu archivo Python
       - name: Ejecutar script
-        run: python "Caudales Pirque Github.py"
+        run: python "caudales_pirque.py"
 
       - name: Guardar datos en el CSV
         run: |
