@@ -2,7 +2,7 @@
 
 Visualización de caudales reportados en las estaciones del Canal Pirque.
 
-> *Los gráficos se actualizan automáticamente todos los días.*
+> *Los gráficos se actualizan diariamente.*
 
 ---
 
