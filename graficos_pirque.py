@@ -21,7 +21,7 @@ os.makedirs(output_dir, exist_ok=True)
 # 4. Generar encabezado del README.md
 readme_content = "# 📊 Monitoreo de Caudales Canal Pirque\n\n"
 readme_content += "Visualización de caudales reportados en las estaciones del Canal Pirque.\n\n"
-readme_content += "> *Los gráficos se actualizan automáticamente todos los días.*\n\n---\n\n"
+readme_content += "> *Los gráficos se actualizan diariamente.*\n\n---\n\n"
 
 # 5. Generar un gráfico por cada Estacion
 estaciones = sorted(df['Estacion'].unique())
