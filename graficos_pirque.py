@@ -21,6 +21,7 @@ os.makedirs(output_dir, exist_ok=True)
 # 4. Generar encabezado del README.md
 readme_content = "# 📊 Monitoreo de Caudales Canal Pirque\n\n"
 readme_content += "Visualización de caudales reportados en las estaciones del Canal Pirque.\n\n"
+readme_content += ![Diagrama Unifilar Pirque](./unifilar_pirque.jpg)
 readme_content += "> *Los gráficos se actualizan diariamente.*\n\n---\n\n"
 
 # 5. Generar un gráfico por cada Estacion
