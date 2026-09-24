@@ -2,28 +2,6 @@
 
 Visualización de caudales reportados en las estaciones del Canal Pirque.
 
-```mermaid
-graph LR
-    Sirene["Canal Matriz Sirene"] --> LC
-
-    %% Marcos (Encasillados)
-    LC["┌──────────────┐<br>│  La Cuncuna  │<br>└──────────────┘"]
-    MB["┌──────────┐<br>│  Marco B │<br>└──────────┘"]
-    MC["┌──────────┐<br>│  Marco C │<br>└──────────┘"]
-
-    %% Derivaciones desde La Cuncuna
-    LC -- "Caida Puntilla" --> MB
-    LC -- "MSR01 → MSR02 → MSR03 → MSR19" --> CSR["Canal Santa Rita"]
-
-    %% Derivaciones desde Marco B
-    MB -- "Canal Cruceral - El Llano" --> MC
-    MB -- "MLI01 → MLI15" --> CLI["Canal La Isla"]
-
-    %% Derivaciones desde Marco C
-    MC -- "MCL01 → MCL07" --> CEC["Canal El Cruceral"]
-    MC -- "MEL01 → MEL09" --> CEL["Canal El Llano"]
-```
-
 > *Los gráficos se actualizan diariamente.*
 
 ---
