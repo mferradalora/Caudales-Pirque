@@ -2,7 +2,7 @@
 
 Visualización de caudales reportados en las estaciones del Canal Pirque.
 
-![Diagrama Unifilar Pirque](./unifilar_pirque.png)
+![Diagrama Unifilar Pirque](./unifilar_pirque.jpg)
 
 > *Los gráficos se actualizan diariamente.*
 
