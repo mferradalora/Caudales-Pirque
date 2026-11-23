@@ -7,7 +7,6 @@ import pandas as pd
 df = pd.read_csv('caudales_pirque.csv')
 
 # 2. Convertir la columna Fecha a objeto datetime
-# Como el formato en el CSV es YYYY-MM-DD HH:MM:SS, pandas lo reconoce automáticamente
 df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
 
 # Limpiar valores nulos y eliminar registros duplicados
@@ -46,13 +45,20 @@ for estacion in estaciones:
     plt.ylabel('Caudal (l/s)', fontsize=10) 
     plt.xlabel('Fecha Reportada', fontsize=10)
     
-    # Formato del eje X (una etiqueta por día, en formato dd-mm-yyyy)
+    # Formato del eje X: espaciado dinámico (apunta a ~12 etiquetas visibles)
     ax = plt.gca()
-    ax.xaxis.set_major_locator(mdates.DayLocator()) 
+    rango_dias = (df_estacion['Fecha'].max() - df_estacion['Fecha'].min()).days
+    intervalo = max(1, rango_dias // 12)
+
+    ax.xaxis.set_major_locator(mdates.DayLocator(interval=intervalo)) 
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y')) 
+    ax.xaxis.set_minor_locator(mdates.DayLocator(interval=1)) # Ticks diarios sin texto
+    
     plt.xticks(rotation=45, ha='right', fontsize=9) 
 
-    plt.grid(True, linestyle='--', alpha=0.5)
+    # Grilla principal en etiquetas de fecha y grilla tenue diaria
+    plt.grid(True, which='major', linestyle='--', alpha=0.6)
+    plt.grid(True, which='minor', linestyle=':', alpha=0.25)
     plt.tight_layout()
 
     # Normalizar el nombre del archivo
@@ -61,9 +67,9 @@ for estacion in estaciones:
     plt.savefig(filepath, dpi=120)
     plt.close()
 
-    # Enlazar la imagen generada dentro del README.md
+    # Enlazar la imagen generada dentro del README.md (usando '/' para compatibilidad en GitHub)
     readme_content += f"## {estacion}\n\n"
-    readme_content += f"![{estacion}]({filepath})\n\n---\n\n"
+    readme_content += f"![{estacion}]({output_dir}/{filename})\n\n---\n\n"
 
 # 6. Escribir o sobrescribir el README.md
 with open('README.md', 'w', encoding='utf-8') as f:
